@@ -3,29 +3,24 @@ const Course = require('../models/Course')
 const Progress = require('../models/Progress')
 
 exports.createTest = async (req, res) => {
-  const { title, questions, courseId } = req.body
-
+  const { courseId, questions } = req.body
+  console.log(courseId)
   try {
     const course = await Course.findById(courseId)
-
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' })
-    }
-
-    if (
-      course.teacher.toString() !== req.user._id &&
-      req.user.role !== 'admin'
-    ) {
-      return res.status(403).json({ message: 'Not alowed' })
+      return res.status(402).json({ message: 'There isnt course' })
     }
 
     const test = new Test({
-      title,
-      courseId,
+      course: courseId,
       questions,
+      createdBy: req.user._id,
     })
 
     await test.save()
+
+    course.tests.push(test._id)
+    await course.save()
     res.status(201).json(test)
   } catch (error) {
     res.status(500).json({ message: 'Test error', error: error.message })
@@ -86,5 +81,18 @@ exports.completeTest = async (req, res) => {
     res.status(200).json({ message: 'Test complete', score, progress })
   } catch (error) {
     res.status(500).json({ message: 'error test', error: error.message })
+  }
+}
+exports.getTestsForCourse = async (req, res) => {
+  const courseId = req.params.id
+  try {
+    const tests = await Test.find({ course: courseId })
+    if (!tests.length) {
+      return res.status(404).json({ message: 'There isnt tests' })
+    }
+
+    res.status(200).json(tests)
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error })
   }
 }

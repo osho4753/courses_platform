@@ -21,6 +21,7 @@ const courseSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  tests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Test' }],
   createdAt: {
     type: Date,
     default: Date.now,

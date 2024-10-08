@@ -1,24 +1,24 @@
 const mongoose = require('mongoose')
 
-const questionSchema = new mongoose.Schema({
-  questionText: { type: String, required: true },
-  answerOptions: [
-    {
-      answerText: { type: String, required: true },
-      isCorrect: { type: Boolean, required: true },
-    },
-  ],
-})
-
 const testSchema = new mongoose.Schema({
-  courseId: {
+  course: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
     required: true,
   },
-  title: { type: String, required: true },
-  questions: [questionSchema],
-  createdAt: { type: Date, default: Date.now },
+  questions: [
+    {
+      questionText: { type: String, required: true },
+      options: [{ type: String, required: true }],
+      correctOption: { type: Number, required: true },
+    },
+  ],
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Преподаватель
+    required: true,
+  },
 })
 
-module.exports = mongoose.model('Test', testSchema)
+const Test = mongoose.model('Test', testSchema)
+module.exports = Test

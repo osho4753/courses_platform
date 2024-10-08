@@ -20,7 +20,6 @@ router.post(
   upload.single('file'),
   createCourse
 )
-
 router.put(
   '/:id',
   protect,

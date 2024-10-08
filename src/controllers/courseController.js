@@ -25,20 +25,24 @@ exports.getCourseById = async (req, res) => {
   }
 }
 exports.createCourse = async (req, res) => {
-  const { title, description, content } = req.body
   try {
+    const { title, description, content } = req.body
+
     const course = new Course({
       title,
       description,
       content,
       teacher: req.user._id,
-      media: req.file ? req.file.path : null,
+      media: req.file ? `uploads/${req.file.filename}` : null,
     })
 
     await course.save()
-    res.status(201).json(course)
+    res.status(201).json({
+      course,
+      message: 'Course created successfully!',
+    })
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message })
+    res.status(500).json({ message: 'Server error' })
   }
 }
 

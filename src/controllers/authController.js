@@ -17,7 +17,7 @@ exports.registerUser = async (req, res) => {
     const user = new User({ name, email, password, role })
     await user.save()
     const token = generateToken(user._id)
-    res.status(201).json({ token })
+    res.status(201).json({ user, token })
   } catch (error) {
     res.status(500).json({ message: ' error' })
   }
@@ -38,7 +38,7 @@ exports.loginUser = async (req, res) => {
     }
 
     const token = generateToken(user._id)
-    res.status(200).json({ token })
+    res.status(200).json({ user, token })
   } catch (error) {
     res.status(500).json({ message: 'Server error' })
   }
